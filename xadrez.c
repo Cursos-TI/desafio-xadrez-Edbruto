@@ -1,56 +1,75 @@
 #include <stdio.h>
 
-// Função recursiva para movimentar a Torre (direita)
+#define N 8
+
+char tabuleiro[N][N];
+
+// Inicializa tabuleiro vazio
+void inicializarTabuleiro() {
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            tabuleiro[i][j] = '.';
+}
+
+// Mostra o tabuleiro
+void imprimirTabuleiro() {
+    for (int i = N - 1; i >= 0; i--) {
+        for (int j = 0; j < N; j++) {
+            printf("%c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+// Marca posição da peça
+void marcarPosicao(int x, int y, char peca) {
+    if (x >= 0 && x < N && y >= 0 && y < N)
+        tabuleiro[y][x] = peca;
+}
+
+// Função recursiva Torre (direita)
 void moverTorre(int casas, int *x, int *y) {
-    if (casas <= 0) return;
-    (*x)++;
-    printf("Direita -> Posição atual: (%d, %d)\n", *x, *y);
-    moverTorre(casas - 1, x, y);
+    casas <= 0 ? (void)0 : ((*x)++, marcarPosicao(*x, *y, 'T'),
+    printf("Direita -> (%d,%d)\n", *x, *y), imprimirTabuleiro(),
+    moverTorre(casas - 1, x, y));
 }
 
-// Função recursiva para movimentar a Rainha (esquerda)
+// Função recursiva Rainha (esquerda)
 void moverRainha(int casas, int *x, int *y) {
-    if (casas <= 0) return;
-    (*x)--;
-    printf("Esquerda -> Posição atual: (%d, %d)\n", *x, *y);
-    moverRainha(casas - 1, x, y);
+    casas <= 0 ? (void)0 : ((*x)--, marcarPosicao(*x, *y, 'R'),
+    printf("Esquerda -> (%d,%d)\n", *x, *y), imprimirTabuleiro(),
+    moverRainha(casas - 1, x, y));
 }
 
-// Função recursiva para movimentar o Bispo (cima direita)
+// Função recursiva Bispo (cima direita)
 void moverBispoRecursivo(int casas, int *x, int *y) {
-    if (casas <= 0) return;
-    (*x)++;
-    (*y)++;
-    printf("Cima Direita -> Posição atual: (%d, %d)\n", *x, *y);
-    moverBispoRecursivo(casas - 1, x, y);
+    casas <= 0 ? (void)0 : ((*x)++, (*y)++, marcarPosicao(*x, *y, 'B'),
+    printf("Cima Direita -> (%d,%d)\n", *x, *y), imprimirTabuleiro(),
+    moverBispoRecursivo(casas - 1, x, y));
 }
 
-// Movimento do Bispo com loops aninhados
+// Bispo com loops aninhados
 void moverBispoComLoops(int casas, int *x, int *y) {
     for (int i = 0; i < casas; i++) {
         for (int j = 0; j < 1; j++) {
-            (*x)++;
-            (*y)++;
-            printf("Cima Direita -> Posição atual: (%d, %d)\n", *x, *y);
+            (*x)++, (*y)++;
+            marcarPosicao(*x, *y, 'B');
+            printf("Cima Direita -> (%d,%d)\n", *x, *y);
+            imprimirTabuleiro();
         }
     }
 }
 
-// Movimento do Cavalo (duas casas para cima e uma para direita)
+// Cavalo (2 para cima, 1 para direita) usando loops complexos
 void moverCavalo(int *x, int *y) {
     printf("\nMovimento do Cavalo:\n");
     for (int i = 0; i < 3; i++) {
         for (int j = i; j < 3; j++) {
-            if (i < 2 && j == i) {
-                (*y)++;
-                printf("Cima -> Posição atual: (%d, %d)\n", *x, *y);
-            } else if (i == 2 && j == 2) {
-                (*x)++;
-                printf("Direita -> Posição atual: (%d, %d)\n", *x, *y);
-                break;
-            } else {
-                continue;
-            }
+            (i < 2 && j == i) ? ((*y)++, marcarPosicao(*x, *y, 'C'),
+            printf("Cima -> (%d,%d)\n", *x, *y), imprimirTabuleiro()) :
+            (i == 2 && j == 2 ? ((*x)++, marcarPosicao(*x, *y, 'C'),
+            printf("Direita -> (%d,%d)\n", *x, *y), imprimirTabuleiro(), j = 3) : (void)0);
         }
     }
 }
@@ -58,6 +77,9 @@ void moverCavalo(int *x, int *y) {
 int main() {
     int x = 0, y = 0;
     int movimentoTorre, movimentoBispo, movimentoRainha;
+
+    inicializarTabuleiro();
+    marcarPosicao(x, y, 'S'); // posição inicial (Start)
 
     printf("Digite o número de casas para movimentar a Torre (Direita): ");
     scanf("%d", &movimentoTorre);
